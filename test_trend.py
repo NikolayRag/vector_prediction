@@ -1,3 +1,5 @@
+from _plotlib import *
+
 import matplotlib.pyplot as plt
 import numpy as np
 from vector_prediction import VectorSignalPredictor
@@ -13,8 +15,8 @@ data = np.random.rand(30, 3)  # 50 time steps, 3 features
 predictor.fit(data, epochs=20, split_ratio=0.8)
 
 # Analyze trend by making continuous predictions
-predictions = []
-for i in range(n_steps, len(data)):
+predictions = [np.array([[0,0,0]])]*(len(data)-n_steps)
+for i in range(len(data)-n_steps, len(data)):
     print(f"Prediction {i}/{len(data)}")
 
     X_new = data[i-n_steps:i]
@@ -31,13 +33,10 @@ smoothed_data = predictor.smooth_data_ema(data, alpha=0.1)
 _, uncertainty = predictor.predict(data[-n_steps:], n_iter=100)
 print("Prediction uncertainty for latest prediction (standard deviation):", uncertainty)
 
-# Plot the trend of one feature along with predictions
-plt.figure(figsize=(15, 5))
-plt.plot(data[:, 0], label='Actual Data')
-plt.plot(np.arange(n_steps, len(data)), predictions[:, 0], label='Predicted Data', linestyle='dashed')
-plt.plot(smoothed_data[:, 0], label='Smoothed Data', linestyle='dashed')
-plt.xlabel('Time Steps')
-plt.ylabel('Feature 1 Value')
-plt.title('Trend Analysis with LSTM Predictions')
-plt.legend()
-plt.show()
+print(np.arange(n_steps, len(data)))
+plot_start()
+plot_vectors_layer(pd.DataFrame(data[:, 0]), label='Actual Data')
+plot_vectors_layer(pd.DataFrame(predictions[:, 0]), label='Predicted Data', linestyle='dashed')
+plot_vectors_layer(pd.DataFrame(smoothed_data[:, 0]), label='Smoothed Data', linestyle='dashed')
+plot_end()
+

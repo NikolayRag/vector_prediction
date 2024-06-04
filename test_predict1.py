@@ -2,31 +2,8 @@
 Test: learn on data and predict one step more.
 '''
 
-import pandas as pd
-import matplotlib.pyplot as plt
 
-def plot_vectors(data):
-    # Create a new figure for plotting
-    plt.figure()
-    
-    # Plot each column as a separate line
-    for column in data.columns:
-        plt.plot(data[column], label=f'Line {column + 1}')
-        
-    # Add title and labels
-    plt.title('Plot of Vectors from CSV')
-    plt.xlabel('Index')
-    plt.ylabel('Value')
-    
-    # Show legend
-    plt.legend()
-    
-    # Display the plot
-    plt.show()
-
-#pData = plot_vectors(pd.read_csv('fft.csv', header=None)) # Plot .csv file for example, where row is vector
-
-
+from _plotlib import *
 
 import numpy as np
 from vector_prediction import VectorSignalPredictor
