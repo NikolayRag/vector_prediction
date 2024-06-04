@@ -7,7 +7,7 @@ n_steps = 20
 predictor = VectorSignalPredictor(n_steps=n_steps, dropout_rate=0.2)
 
 # Example data
-data = np.random.rand(50, 3)  # 50 time steps, 3 features
+data = np.random.rand(30, 3)  # 50 time steps, 3 features
 
 # Train the model
 predictor.fit(data, epochs=20, split_ratio=0.8)
@@ -18,7 +18,7 @@ for i in range(n_steps, len(data)):
     print(f"Prediction {i}/{len(data)}")
 
     X_new = data[i-n_steps:i]
-    y_pred, _ = predictor.predict(X_new)
+    y_pred, _ = predictor.predict(X_new, n_iter=10)
     predictions.append(y_pred)
 
 # Convert to array for easier manipulation
