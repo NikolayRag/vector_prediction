@@ -3,6 +3,7 @@ Test: learn on data and predict one step more.
 '''
 
 
+import _fixpath
 from _plotlib import *
 
 import numpy as np

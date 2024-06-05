@@ -1,3 +1,4 @@
+import _fixpath
 from _plotlib import *
 
 import matplotlib.pyplot as plt
@@ -33,7 +34,6 @@ smoothed_data = predictor.smooth_data_ema(data, alpha=0.1)
 _, uncertainty = predictor.predict(data[-n_steps:], n_iter=100)
 print("Prediction uncertainty for latest prediction (standard deviation):", uncertainty)
 
-print(np.arange(n_steps, len(data)))
 plot_start()
 plot_vectors_layer(pd.DataFrame(data[-100:, 0]), label='Actual Data')
 plot_vectors_layer(pd.DataFrame(predictions[-100:, 0]), label='Predicted Data', linestyle='dashed')

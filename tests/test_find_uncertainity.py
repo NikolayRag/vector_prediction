@@ -2,6 +2,8 @@
 Test: apply different smoothing effects to find best uncertainity.
 '''
 
+import _fixpath
+
 import numpy as np
 from vector_prediction import VectorSignalPredictor
 
