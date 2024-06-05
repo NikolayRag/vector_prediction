@@ -5,17 +5,17 @@ import numpy as np
 from vector_prediction import VectorSignalPredictor
 
 # Initialize the predictor
-n_steps = 20
+n_steps = 35
 predictor = VectorSignalPredictor(n_steps=n_steps, dropout_rate=0.2)
 
 # Example data
-data = np.random.rand(30, 3)  # 50 time steps, 3 features
+data = np.random.rand(1000, 9)  # 1000 time steps, 9 features
 
 # Train the model
-predictor.fit(data, epochs=20, split_ratio=0.8)
+predictor.fit(data, epochs=50, split_ratio=0.8)
 
 # Analyze trend by making continuous predictions
-predictions = [np.array([[0,0,0]])]*(len(data)-n_steps)
+predictions = [np.array([[0,0,0,0,0,0,0,0,0]])]*(len(data)-n_steps)
 for i in range(len(data)-n_steps, len(data)):
     print(f"Prediction {i}/{len(data)}")
 
@@ -35,8 +35,8 @@ print("Prediction uncertainty for latest prediction (standard deviation):", unce
 
 print(np.arange(n_steps, len(data)))
 plot_start()
-plot_vectors_layer(pd.DataFrame(data[:, 0]), label='Actual Data')
-plot_vectors_layer(pd.DataFrame(predictions[:, 0]), label='Predicted Data', linestyle='dashed')
-plot_vectors_layer(pd.DataFrame(smoothed_data[:, 0]), label='Smoothed Data', linestyle='dashed')
+plot_vectors_layer(pd.DataFrame(data[-100:, 0]), label='Actual Data')
+plot_vectors_layer(pd.DataFrame(predictions[-100:, 0]), label='Predicted Data', linestyle='dashed')
+plot_vectors_layer(pd.DataFrame(smoothed_data[-100:, 0]), label='Smoothed Data', linestyle='dashed')
 plot_end()
 
