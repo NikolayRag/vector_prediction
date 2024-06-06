@@ -40,7 +40,7 @@ print("Prediction uncertainty for latest prediction (standard deviation):", unce
 
 plot_start()
 plot_vectors_layer(pd.DataFrame(data[-100:, 0]), label='Actual Data')
-plot_vectors_layer(pd.DataFrame(predictions[-100:, 0]), label='Predicted Data', linestyle='dashed')
-plot_vectors_layer(pd.DataFrame(smoothed_data[-100:, 0]), label='Smoothed Data', linestyle='dashed')
+plot_vectors_layer(pd.DataFrame(predictions[-100:, 0]), label='Predicted Data', format='--')
+plot_vectors_layer(pd.DataFrame(smoothed_data[-100:, 0]), label='Smoothed Data', format='--')
 plot_end()
 

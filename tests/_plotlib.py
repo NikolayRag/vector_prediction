@@ -18,11 +18,13 @@ def plot_end():
     # Display the plot
     plt.show()
 
-def plot_vectors_layer(data, label="Line", linestyle='solid'):
+def plot_vectors_layer(data, label="Line", format=""):
     # Plot each column as a separate line
     for column in data.columns:
-        plt.plot(data[column], label=f'{label} {column + 1}', linestyle=linestyle)
+        plt.plot(data[column], format, label=f'{label} {column + 1}')
         
+def plot_vectors_points(_x, _y, format='ro'):
+    plt.plot(_x, _y, format)
 
 def plot_vectors(data):
     plot_start()
