@@ -1,4 +1,5 @@
 import _fixpath
+from _jsonadd import *
 from _plotlib import *
 
 import matplotlib.pyplot as plt
@@ -10,7 +11,10 @@ n_steps = 35
 predictor = VectorSignalPredictor(n_steps=n_steps, dropout_rate=0.2)
 
 # Example data
-data = np.random.rand(1000, 9)  # 1000 time steps, 9 features
+data = load_json()
+if data is None:
+    data = np.random.rand(20, 9)  # 1000 time steps, 9 features
+print(f"Input data of {len(data)} x {len(data[0])}")
 
 # Train the model
 predictor.fit(data, epochs=50, split_ratio=0.8)

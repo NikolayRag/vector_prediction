@@ -3,6 +3,7 @@ Test: apply different smoothing effects to find best uncertainity.
 '''
 
 import _fixpath
+from _jsonadd import *
 
 import numpy as np
 from vector_prediction import VectorSignalPredictor
@@ -57,8 +58,11 @@ def analyze_smoothing_effectsEMA(data, n_steps, smoothing_factors, epochs=20):
     return best_factor, best_uncertainty
 
 
-# Generate some sample data
-data = np.random.rand(1000, 3)  # 1000 time steps with 3 features
+# Load or Generate some sample data
+data = load_json()
+if data is None:
+    data = np.random.rand(1000, 3)  # 1000 time steps with 3 features
+print(f"Input data of {len(data)} x {len(data[0])}")
 
 n_steps = 10  # Number of previous steps to use for prediction
 epochs = 20  # Number of training epochs

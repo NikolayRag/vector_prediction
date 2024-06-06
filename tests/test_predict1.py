@@ -4,6 +4,7 @@ Test: learn on data and predict one step more.
 
 
 import _fixpath
+from _jsonadd import *
 from _plotlib import *
 
 import numpy as np
@@ -13,8 +14,11 @@ from vector_prediction import VectorSignalPredictor
 n_steps = 20  # Number of previous steps to use for prediction
 predictor = VectorSignalPredictor(n_steps=n_steps, dropout_rate=0.2)
 
-# Generate some synthetic data for demonstration purposes
-data = np.random.rand(1000, 6)  # 1000 time steps, each with a 6-dimensional vector
+# Load or Generate some synthetic data for demonstration purposes
+data = load_json()
+if data is None:
+    data = np.random.rand(1000, 6)  # 1000 time steps, each with a 6-dimensional vector
+print(f"Input data of {len(data)} x {len(data[0])}")
 
 # Train the model
 predictor.fit(data, epochs=20, split_ratio=0.8)
