@@ -40,5 +40,13 @@ expected_error = predictor.expected_error(data)
 print("Expected Mean Absolute Error on Validation Set:", expected_error)
 
 
-plot_vectors(pd.DataFrame(X_new))
+plot_start()
 
+toplot = np.append(data, y_pred, axis=0)
+plot_vectors_layer(pd.DataFrame(toplot[-n_steps-1:]))
+
+for y in y_pred[0]:
+    plot_vectors_points(n_steps, y, 'o')
+
+
+plot_end()
