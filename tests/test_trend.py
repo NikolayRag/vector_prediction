@@ -13,14 +13,14 @@ predictor = VectorSignalPredictor(n_steps=n_steps, dropout_rate=0.2)
 # Example data
 data = load_json()
 if data is None:
-    data = np.random.rand(20, 9)  # 1000 time steps, 9 features
+    data = np.random.rand(100, 9)  # 1000 time steps, 9 features
 print(f"Input data of {len(data)} x {len(data[0])}")
 
 # Train the model
 predictor.fit(data, epochs=50, split_ratio=0.8)
 
 # Analyze trend by making continuous predictions
-predictions = [np.array([[0,0,0,0,0,0,0,0,0]])]*(len(data)-n_steps)
+predictions = [np.array([[0]*len(data[0])])]*(len(data)-n_steps)
 for i in range(len(data)-n_steps, len(data)):
     print(f"Prediction {i}/{len(data)}")
 
