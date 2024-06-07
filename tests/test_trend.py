@@ -19,17 +19,15 @@ print(f"Input data of {len(data)} x {len(data[0])}")
 # Train the model
 predictor.fit(data, epochs=50, split_ratio=0.8)
 
-# Analyze trend by making continuous predictions
-predictions = [np.array([[0]*len(data[0])])]*(len(data)-n_steps)
-for i in range(len(data)-n_steps, len(data)):
-    print(f"Prediction {i}/{len(data)}")
+# Analyze trend by making continuous cumulative predictions
+goback = 25
+predictions = data[:-goback]
+for i in range(goback):
+    print(f"Prediction {i+1}")
 
-    X_new = data[i-n_steps:i]
-    y_pred, _ = predictor.predict(X_new, n_iter=10)
-    predictions.append(y_pred)
-
-# Convert to array for easier manipulation
-predictions = np.array(predictions).squeeze()
+    X_new = predictions[-n_steps:]
+    y_pred, _ = predictor.predict(X_new, n_iter=25)
+    predictions = np.append(predictions, y_pred, axis=0)
 
 # Smoothing the data
 smoothed_data = predictor.smooth_data_ema(data, alpha=0.1)
