@@ -141,15 +141,15 @@ class VectorSignalPredictor:
         return y_pred, uncertainty
 
     def predict_some(self, data, n_iter=50, steps=1):
-        predictionsD = np.array(data)
-        predictionsU = np.array([[0,0,0,0]])
+        dataD = np.array(X)
+        dataU = np.array([[0]*len(dataD[0])]) # hack: elseway append got dimention mismatch
         for i in range(steps):
-            X_new = predictionsD[-self.n_steps:]
-            y_pred, uncertainty = self.predict(X_new, n_iter=n_iter)
-            predictionsD = np.append(predictionsD, y_pred, axis=0)
-            predictionsU = np.append(predictionsU, uncertainty, axis=0)
+            X_new = dataD[-self.n_steps:]
+            y_pred, y_uncert = self.predict(X_new, n_iter=n_iter)
+            dataD = np.append(dataD, y_pred, axis=0)
+            dataU = np.append(dataU, y_uncert, axis=0)
+        return dataD[-steps:], dataU[-steps:]
 
-        return predictionsD[-steps:], predictionsU
 
 
     def expected_error(self, data):
