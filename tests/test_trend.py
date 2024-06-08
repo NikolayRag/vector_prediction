@@ -26,8 +26,8 @@ predictor.fit(data, epochs=epochs, split_ratio=0.8)
 
 # Analyze trend by making continuous cumulative predictions
 goback = 50
-predictions, _ = predictor.predict_some(data[:-goback], steps=goback, n_iter=25)
-
+p_iter=25
+predictions, _ = predictor.predict_some(data[:-goback], steps=goback, n_iter=p_iter)
 
 # Smoothing the data
 smoothed_data = predictor.smooth_data_ema(data, alpha=0.1)
