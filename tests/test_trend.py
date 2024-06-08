@@ -10,21 +10,22 @@ import matplotlib.pyplot as plt
 import numpy as np
 from vector_prediction import VectorSignalPredictor
 
-# Initialize the predictor
-n_steps = 50
-predictor = VectorSignalPredictor(n_steps=n_steps, dropout_rate=0.2)
-
 # Example data
 data = load_json()
 if data is None:
     data = np.random.rand(1000, 9)  # 1000 time steps, 9 features
 print(f"Input data of {len(data)} x {len(data[0])}")
 
+# Initialize the predictor
+n_steps = 50
+predictor = VectorSignalPredictor(n_steps=n_steps, dropout_rate=0.2)
+
 # Train the model
-predictor.fit(data, epochs=100, split_ratio=0.8)
+epochs=100
+predictor.fit(data, epochs=epochs, split_ratio=0.8)
 
 # Analyze trend by making continuous cumulative predictions
-goback = 25
+goback = 50
 predictions, _ = predictor.predict_some(data[:-goback], steps=goback, n_iter=25)
 
 
