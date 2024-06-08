@@ -60,7 +60,8 @@ class VectorSignalPredictor:
     def custom_loss_function(self, y_true, y_pred):
         return tf.reduce_mean(tf.square(y_true - y_pred)) + tf.reduce_mean(tf.square(tf.reduce_sum(y_true, axis=-1) - tf.reduce_sum(y_pred, axis=-1)))
 
-    def build_lstm_with_attention(self, input_shape):
+
+    def build_lstm_model(self, input_shape):
         inputs = Input(shape=input_shape)
         lstm_out = LSTM(50, activation='relu', return_sequences=True)(inputs)
         attention_out = Attention()([lstm_out, lstm_out])
@@ -102,7 +103,7 @@ class VectorSignalPredictor:
             split_ratio (float): Ratio for splitting the data into training and validation sets.
         """
         X_train, y_train, X_val, y_val = self.prepare_dataset(data, split_ratio)
-        self.model = self.build_lstm_with_attention((X_train.shape[1], X_train.shape[2]))
+        self.model = self.build_lstm_model((X_train.shape[1], X_train.shape[2]))
         self.model.fit(X_train, y_train, epochs=epochs, validation_data=(X_val, y_val))
 
     def predict_with_uncertainty(self, X, n_iter=50):
