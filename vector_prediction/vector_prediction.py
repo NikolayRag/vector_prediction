@@ -140,7 +140,7 @@ class VectorSignalPredictor:
         uncertainty = self.scaler.inverse_transform(uncertainty_scaled).reshape(-1, X.shape[1])
         return y_pred, uncertainty
 
-    def predict_some(self, data, n_iter=50, steps=1):
+    def predict_some(self, X, n_iter=50, steps=1, cb=None):
         dataD = np.array(X)
         dataU = np.array([[0]*len(dataD[0])]) # hack: elseway append got dimention mismatch
         for i in range(steps):
@@ -148,6 +148,10 @@ class VectorSignalPredictor:
             y_pred, y_uncert = self.predict(X_new, n_iter=n_iter)
             dataD = np.append(dataD, y_pred, axis=0)
             dataU = np.append(dataU, y_uncert, axis=0)
+
+            if callable(cb):
+                cb(i, y_pred, y_uncert)
+
         return dataD[-steps:], dataU[-steps:]
 
 
