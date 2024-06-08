@@ -62,6 +62,15 @@ class VectorSignalPredictor:
 
 
     def build_lstm_model(self, input_shape):
+        """
+        Build the LSTM model.
+        
+        Args:
+            input_shape (tuple): Shape of the input to the LSTM model.
+        
+        Returns:
+            model (Sequential): Compiled LSTM model.
+        """
         inputs = Input(shape=input_shape)
         lstm_out = LSTM(50, activation='relu', return_sequences=True)(inputs)
         attention_out = Attention()([lstm_out, lstm_out])
@@ -132,7 +141,7 @@ class VectorSignalPredictor:
             X (np.ndarray): Input data for prediction.
         
         Returns:
-            np.ndarray: Predicted next vector.
+            np.ndarray, np.ndarray: Predicted next vector and uncertainty.
         """
         X_scaled = self.scaler.transform(X.reshape(-1, X.shape[-1])).reshape(1, X.shape[0], X.shape[1])
         y_pred_scaled, uncertainty_scaled = self.predict_with_uncertainty(X_scaled, n_iter=n_iter)
@@ -141,6 +150,17 @@ class VectorSignalPredictor:
         return y_pred, uncertainty
 
     def predict_some(self, X, n_iter=50, steps=1, cb=None):
+        """
+        Run cumulative prediction, expanding data with each step subsequently.
+        
+        Args:
+            X (np.ndarray): Input data for prediction.
+            n_iter (int): Number of stochastic forward passes.
+            steps (int): Number cumulative steps.
+        
+        Returns:
+            np.ndarray, np.ndarray: Predicted vectors and uncertainty.
+        """
         dataD = np.array(X)
         dataU = np.array([[0]*len(dataD[0])]) # hack: elseway append got dimention mismatch
         for i in range(steps):

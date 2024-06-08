@@ -7,7 +7,7 @@ The `VectorSignalPredictor` library provides tools to predict future values of v
 To use this library, simply clone the repository and import it into your project.
 
 ```
-$ git clone <repository-url>
+$ git clone https://github.com/NikolayRag/vector_prediction.git
 ```
 
 ## Usage
@@ -59,6 +59,35 @@ expected_error = predictor.expected_error(data)
 print("Expected Mean Absolute Error on Validation Set:", expected_error)
 ```
 
+### Example Code Usage
+
+```python
+import numpy as np
+from prediction import VectorSignalPredictor
+
+# Initialize the predictor
+n_steps = 10  # Number of previous steps to use for prediction
+predictor = VectorSignalPredictor(n_steps=n_steps, dropout_rate=0.2)
+
+# Generate some synthetic data for demonstration purposes
+data = np.random.rand(1000, 3)  # 1000 time steps, each with a 3-dimensional vector
+
+# Train the model
+predictor.fit(data, epochs=20, split_ratio=0.8)
+
+# Predict the next step
+X_new = data[-n_steps:]  # Take the last n_steps vectors
+y_pred, uncertainty = predictor.predict(X_new)
+
+# Print prediction and uncertainty
+print("Predicted next vector:", y_pred)
+print("Prediction uncertainty (standard deviation):", uncertainty)
+
+# Calculate and print expected error
+expected_error = predictor.expected_error(data)
+print("Expected Mean Absolute Error on Validation Set:", expected_error)
+```
+
 # VectorSignalPredictor Library reference
 
 The `VectorSignalPredictor` library provides an easy-to-use interface for building and training LSTM models for vector signal prediction. It supports preprocessing, training, and prediction with uncertainty estimation.
@@ -73,42 +102,8 @@ The `VectorSignalPredictor` library provides an easy-to-use interface for buildi
   - `n_steps` (int): Number of previous steps to use for prediction.
   - `dropout_rate` (float): Dropout rate for regularization (default is 0.2).
 
-### Methods
+### Public Methods
 
-#### `preprocess_data(self, data: np.ndarray) -> Tuple[np.ndarray, np.ndarray]`
-
-Preprocess the input data into sequences.
-
-- **Parameters:**
-  - `data` (np.ndarray): Input data with shape (timesteps, features).
-
-- **Returns:**
-  - `X` (np.ndarray): Preprocessed input data.
-  - `y` (np.ndarray): Preprocessed output data.
-
-#### `prepare_dataset(self, data: np.ndarray, split_ratio: float = 0.8) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]`
-
-Prepare the dataset for training and validation.
-
-- **Parameters:**
-  - `data` (np.ndarray): Input data.
-  - `split_ratio` (float): Ratio for splitting the data into training and validation sets (default is 0.8).
-
-- **Returns:**
-  - `X_train` (np.ndarray): Training input data.
-  - `y_train` (np.ndarray): Training target data.
-  - `X_val` (np.ndarray): Validation input data.
-  - `y_val` (np.ndarray): Validation target data.
-
-#### `build_lstm_model(self, input_shape: Tuple[int, int]) -> Sequential`
-
-Build the LSTM model.
-
-- **Parameters:**
-  - `input_shape` (tuple): Shape of the input to the LSTM model.
-
-- **Returns:**
-  - `model` (Sequential): Compiled LSTM model.
 
 #### `fit(self, data: np.ndarray, epochs: int = 20, split_ratio: float = 0.8) -> None`
 
@@ -119,21 +114,20 @@ Train the LSTM model.
   - `epochs` (int): Number of epochs to train (default is 20).
   - `split_ratio` (float): Ratio for splitting the data into training and validation sets (default is 0.8).
 
-#### `predict_with_uncertainty(self, X: np.ndarray, n_iter: int = 50) -> Tuple[np.ndarray, np.ndarray]`
-
-Predict with uncertainty using multiple forward passes.
-
-- **Parameters:**
-  - `X` (np.ndarray): Input data for prediction.
-  - `n_iter` (int): Number of stochastic forward passes (default is 50).
-
-- **Returns:**
-  - `prediction` (np.ndarray): Mean prediction.
-  - `uncertainty` (np.ndarray): Prediction uncertainty (standard deviation).
-
 #### `predict(self, X: np.ndarray) -> Tuple[np.ndarray, np.ndarray]`
 
 Make a prediction for the next time step.
+
+- **Parameters:**
+  - `X` (np.ndarray): Input data for prediction.
+
+- **Returns:**
+  - `y_pred` (np.ndarray): Predicted next vector.
+  - `uncertainty` (np.ndarray): Prediction uncertainty.
+
+#### `predict_some(self, X: np.ndarray) -> Tuple[np.ndarray, np.ndarray]`
+
+Run cumulative prediction, expanding data with each step subsequently.
 
 - **Parameters:**
   - `X` (np.ndarray): Input data for prediction.
@@ -173,32 +167,3 @@ Applies an Exponential Moving Average (EMA) smoothing to the given data with a s
 
 - **Returns:**
   - `ema_data` (np.ndarray): The data array after applying the exponential moving average smoothing. The array has the same shape as the input data.
-
-### Example Code Usage
-
-```python
-import numpy as np
-from prediction import VectorSignalPredictor
-
-# Initialize the predictor
-n_steps = 10  # Number of previous steps to use for prediction
-predictor = VectorSignalPredictor(n_steps=n_steps, dropout_rate=0.2)
-
-# Generate some synthetic data for demonstration purposes
-data = np.random.rand(1000, 3)  # 1000 time steps, each with a 3-dimensional vector
-
-# Train the model
-predictor.fit(data, epochs=20, split_ratio=0.8)
-
-# Predict the next step
-X_new = data[-n_steps:]  # Take the last n_steps vectors
-y_pred, uncertainty = predictor.predict(X_new)
-
-# Print prediction and uncertainty
-print("Predicted next vector:", y_pred)
-print("Prediction uncertainty (standard deviation):", uncertainty)
-
-# Calculate and print expected error
-expected_error = predictor.expected_error(data)
-print("Expected Mean Absolute Error on Validation Set:", expected_error)
-```
