@@ -32,14 +32,9 @@ predictions, _ = predictor.predict_some(data[:-goback], steps=goback, n_iter=25)
 # Smoothing the data
 smoothed_data = predictor.smooth_data_ema(data, alpha=0.1)
 
-# Prediction Uncertainty
-_, uncertainty = predictor.predict(data[-n_steps:], n_iter=100)
-print("Prediction uncertainty for latest prediction (standard deviation):", uncertainty)
-
 plot_start()
-plot_vectors_layer(pd.DataFrame(data[-250:]), label='Actual Data')
-plot_vectors_layer(pd.DataFrame(predictions[-250:]), label='Predicted Data', format=':')
-plot_vectors_layer(pd.DataFrame(smoothed_data[-250:]), label='Smoothed Data', format='--')
-plot_vectors_layer(pd.DataFrame((np.append(data[:-goback],predictions,axis=0))[-250:,0]), label='Predicted Data', format=':')
+plot_vectors_layer(pd.DataFrame(data[-200:,0]), label='Actual Data')
+plot_vectors_layer(pd.DataFrame((np.append(data[:-goback],predictions,axis=0))[-200:,0]), label='Predicted Data', format=':')
+plot_vectors_layer(pd.DataFrame(smoothed_data[-200:,0]), label='Smoothed Data', format='--')
 plot_end()
 
