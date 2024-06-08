@@ -25,13 +25,8 @@ predictor.fit(data, epochs=100, split_ratio=0.8)
 
 # Analyze trend by making continuous cumulative predictions
 goback = 25
-predictions = data[:-goback]
-for i in range(goback):
-    print(f"Prediction {i+1}")
+predictions, _ = predictor.predict_some(data[:-goback], steps=goback, n_iter=25)
 
-    X_new = predictions[-n_steps:]
-    y_pred, _ = predictor.predict(X_new, n_iter=25)
-    predictions = np.append(predictions, y_pred, axis=0)
 
 # Smoothing the data
 smoothed_data = predictor.smooth_data_ema(data, alpha=0.1)
@@ -44,5 +39,6 @@ plot_start()
 plot_vectors_layer(pd.DataFrame(data[-250:]), label='Actual Data')
 plot_vectors_layer(pd.DataFrame(predictions[-250:]), label='Predicted Data', format=':')
 plot_vectors_layer(pd.DataFrame(smoothed_data[-250:]), label='Smoothed Data', format='--')
+plot_vectors_layer(pd.DataFrame((np.append(data[:-goback],predictions,axis=0))[-250:,0]), label='Predicted Data', format=':')
 plot_end()
 

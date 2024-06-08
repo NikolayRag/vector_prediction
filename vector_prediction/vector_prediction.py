@@ -139,6 +139,18 @@ class VectorSignalPredictor:
         uncertainty = self.scaler.inverse_transform(uncertainty_scaled).reshape(-1, X.shape[1])
         return y_pred, uncertainty
 
+    def predict_some(self, data, n_iter=50, steps=1):
+        predictionsD = np.array(data)
+        predictionsU = np.array([[0,0,0,0]])
+        for i in range(steps):
+            X_new = predictionsD[-self.n_steps:]
+            y_pred, uncertainty = self.predict(X_new, n_iter=n_iter)
+            predictionsD = np.append(predictionsD, y_pred, axis=0)
+            predictionsU = np.append(predictionsU, uncertainty, axis=0)
+
+        return predictionsD[-steps:], predictionsU
+
+
     def expected_error(self, data):
         """
         Calculate the expected error on the validation set.
