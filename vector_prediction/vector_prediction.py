@@ -5,6 +5,8 @@ from tensorflow.keras.layers import LSTM, Dense, Dropout, Input, Attention
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_absolute_error
 
+
+
 class VectorSignalPredictor:
     def __init__(self, n_steps, dropout_rate=0.2):
         """
@@ -18,6 +20,8 @@ class VectorSignalPredictor:
         self.dropout_rate = dropout_rate
         self.scaler = MinMaxScaler()
         self.model = None
+
+
 
     def preprocess_data(self, data):
         """
@@ -35,6 +39,8 @@ class VectorSignalPredictor:
             X.append(data[i:i+self.n_steps])
             y.append(data[i+self.n_steps])
         return np.array(X), np.array(y)
+
+
 
     def prepare_dataset(self, data, split_ratio=0.8):
         """
@@ -56,6 +62,8 @@ class VectorSignalPredictor:
         y_train, y_val = y[:split_index], y[split_index:]
         
         return X_train, y_train, X_val, y_val
+
+
 
     def custom_loss_function(self, y_true, y_pred):
         return tf.reduce_mean(tf.square(y_true - y_pred)) + tf.reduce_mean(tf.square(tf.reduce_sum(y_true, axis=-1) - tf.reduce_sum(y_pred, axis=-1)))
@@ -80,6 +88,8 @@ class VectorSignalPredictor:
         model.compile(optimizer='adam', loss=self.custom_loss_function)
         return model
 
+
+
     '''
     def build_lstm_model(self, input_shape):
         """
@@ -102,6 +112,8 @@ class VectorSignalPredictor:
         return model
     '''
 
+
+
     def fit(self, data, epochs=20, split_ratio=0.8):
         """
         Train the LSTM model.
@@ -114,6 +126,8 @@ class VectorSignalPredictor:
         X_train, y_train, X_val, y_val = self.prepare_dataset(data, split_ratio)
         self.model = self.build_lstm_model((X_train.shape[1], X_train.shape[2]))
         self.model.fit(X_train, y_train, epochs=epochs, validation_data=(X_val, y_val))
+
+
 
     def predict_with_uncertainty(self, X, n_iter=50):
         """
@@ -133,12 +147,15 @@ class VectorSignalPredictor:
         uncertainty = preds.std(axis=0)
         return prediction, uncertainty
 
+
+
     def predict(self, X, n_iter=50):
         """
         Make a prediction for the next time step.
         
         Args:
             X (np.ndarray): Input data for prediction.
+            n_iter (int): Number of stochastic forward passes.
         
         Returns:
             np.ndarray, np.ndarray: Predicted next vector and uncertainty.
@@ -148,6 +165,8 @@ class VectorSignalPredictor:
         y_pred = self.scaler.inverse_transform(y_pred_scaled).reshape(-1, X.shape[1])
         uncertainty = self.scaler.inverse_transform(uncertainty_scaled).reshape(-1, X.shape[1])
         return y_pred, uncertainty
+
+
 
     def predict_some(self, X, n_iter=50, steps=1, cb=None):
         """
@@ -163,6 +182,7 @@ class VectorSignalPredictor:
         """
         dataD = np.array(X)
         dataU = np.array([[0]*len(dataD[0])]) # hack: elseway append got dimention mismatch
+
         for i in range(steps):
             X_new = dataD[-self.n_steps:]
             y_pred, y_uncert = self.predict(X_new, n_iter=n_iter)
@@ -192,6 +212,8 @@ class VectorSignalPredictor:
         y_val_pred_flat = y_val_pred.reshape(-1, y_val_pred.shape[-1])
         return mean_absolute_error(y_val_flat, y_val_pred_flat)
 
+
+
     def smooth_data_sma(self, data, window_size):
         """
         Applies a Simple Moving Average (SMA) smoothing to the given data over a specified window size.
@@ -208,6 +230,8 @@ class VectorSignalPredictor:
             smoothed_col = np.convolve(data[:, i], np.ones(window_size)/window_size, mode='valid')
             smoothed_data[:len(smoothed_col), i] = smoothed_col
         return smoothed_data
+
+
 
     def smooth_data_ema(self, data, alpha):
         """
