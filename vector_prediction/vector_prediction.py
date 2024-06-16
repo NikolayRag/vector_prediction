@@ -5,6 +5,8 @@ from tensorflow.keras.layers import LSTM, Dense, Dropout, Input, Attention
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_absolute_error
 
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '10000'
 
 
 class VectorSignalPredictor:
@@ -125,7 +127,7 @@ class VectorSignalPredictor:
         """
         X_train, y_train, X_val, y_val = self.prepare_dataset(data, split_ratio)
         self.model = self.build_lstm_model((X_train.shape[1], X_train.shape[2]))
-        self.model.fit(X_train, y_train, epochs=epochs, validation_data=(X_val, y_val))
+        self.model.fit(X_train, y_train, epochs=epochs, validation_data=(X_val, y_val), verbose=0)
 
 
 
